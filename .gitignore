@@ -1,0 +1,33 @@
+# Maven
+target/
+!.mvn/wrapper/maven-wrapper.jar
+
+# IntelliJ
+.idea/
+*.iml
+
+# VS Code
+.vscode/
+
+# Logs
+*.log
+
+# OS Files
+.DS_Store
+Thumbs.db
+
+# Environment
+.env
+
+# Application secrets
+application-prod.yml
+
+# Build
+out/
+bin/
+
+# PostgreSQL dumps
+*.sql
+
+# Node
+node_modules/
