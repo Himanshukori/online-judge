@@ -15,4 +15,4 @@ spring:
 server:
   port: 8080
 jwt:
-  secret: Chaange_me_in_production
+  secret: Chaange_me_in_production_for_a_secure_secret_key
