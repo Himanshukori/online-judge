@@ -476,4 +476,4 @@ This project demonstrates:
 
 **Himanshu Kori**
 
-M.Tech Student | Backend Development | System Design | Java & Spring Boot
+M.Tech Student | Backend Development | Java & Spring Boot
