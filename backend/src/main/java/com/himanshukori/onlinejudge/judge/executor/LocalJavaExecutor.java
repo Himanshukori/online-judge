@@ -10,7 +10,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 
 @Component
-public class JavaExecutor implements CodeExecutor {
+public class LocalJavaExecutor implements CodeExecutor {
 
     private static final String TEMP_DIR = "temp";
 

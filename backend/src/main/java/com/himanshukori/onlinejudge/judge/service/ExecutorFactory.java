@@ -1,7 +1,8 @@
 package com.himanshukori.onlinejudge.judge.service;
 
-import com.himanshukori.onlinejudge.judge.executor.JavaExecutor;
+import com.himanshukori.onlinejudge.judge.executor.LocalJavaExecutor;
 import com.himanshukori.onlinejudge.judge.executor.CodeExecutor;
+import com.himanshukori.onlinejudge.judge.executor.DockerJavaExecutor;
 import com.himanshukori.onlinejudge.submission.entity.Language;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -10,7 +11,7 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class ExecutorFactory {
 
-    private final JavaExecutor javaExecutor;
+    private final DockerJavaExecutor dockerJavaExecutor;
 
     public CodeExecutor getExecutor(
             Language language
@@ -18,7 +19,7 @@ public class ExecutorFactory {
 
         return switch (language) {
 
-            case JAVA -> javaExecutor;
+            case JAVA -> dockerJavaExecutor;
 
             default ->
                     throw new RuntimeException(

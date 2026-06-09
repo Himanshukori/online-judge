@@ -17,89 +17,83 @@ import java.util.List;
 @RequiredArgsConstructor
 public class JudgeService {
 
-    private final TestCaseRepository testCaseRepository;
-    private final ExecutorFactory executorFactory;
+        private final TestCaseRepository testCaseRepository;
+        private final ExecutorFactory executorFactory;
 
-    public JudgeResult judgeSubmission(
-            Long problemId,
-            String sourceCode,
-            Language language
-    ) {
+        public JudgeResult judgeSubmission(
+                        Long problemId,
+                        String sourceCode,
+                        Language language) {
 
-        List<TestCase> testCases =
-                testCaseRepository.findByProblemId(
-                        problemId
-                );
+                List<TestCase> testCases = testCaseRepository.findByProblemId(
+                                problemId);
 
-        int passed = 0;
+                int passed = 0;
 
-        CodeExecutor executor =
-                executorFactory.getExecutor(
-                        language
-                );
+                CodeExecutor executor = executorFactory.getExecutor(
+                                language);
 
-        for (TestCase testCase : testCases) {
+                for (TestCase testCase : testCases) {
 
-            ExecutionResult result =
-                    executor.execute(
-                            sourceCode,
-                            testCase.getInputData()
-                    );
+                        ExecutionResult result = executor.execute(
+                                        sourceCode,
+                                        testCase.getInputData());
 
-            if (result.getStatus()
-                    == ExecutionStatus.COMPILATION_ERROR) {
+                        if (result.getStatus() == ExecutionStatus.COMPILATION_ERROR) {
+
+                                return JudgeResult.builder()
+                                                .status(
+                                                                SubmissionStatus.COMPILATION_ERROR)
+                                                .passed(passed)
+                                                .total(testCases.size())
+                                                .build();
+                        }
+
+                        if (result.getStatus() == ExecutionStatus.RUNTIME_ERROR) {
+
+                                return JudgeResult.builder()
+                                                .status(
+                                                                SubmissionStatus.RUNTIME_ERROR)
+                                                .passed(passed)
+                                                .total(testCases.size())
+                                                .build();
+                        }
+                        if (result.getStatus() == ExecutionStatus.TIME_LIMIT_EXCEEDED) {
+
+                                return JudgeResult.builder()
+                                                .status(
+                                                                SubmissionStatus.TIME_LIMIT_EXCEEDED)
+                                                .passed(passed)
+                                                .total(testCases.size())
+                                                .build();
+                        }
+
+                        String expected = testCase.getExpectedOutput()
+                                        .trim();
+
+                        String actual = result.getOutput()
+                                        .trim();
+
+                        if (expected.equals(actual)) {
+
+                                passed++;
+
+                        } else {
+
+                                return JudgeResult.builder()
+                                                .status(
+                                                                SubmissionStatus.WRONG_ANSWER)
+                                                .passed(passed)
+                                                .total(testCases.size())
+                                                .build();
+                        }
+                }
 
                 return JudgeResult.builder()
-                        .status(
-                                SubmissionStatus.COMPILATION_ERROR
-                        )
-                        .passed(passed)
-                        .total(testCases.size())
-                        .build();
-            }
-
-            if (result.getStatus()
-                    == ExecutionStatus.RUNTIME_ERROR) {
-
-                return JudgeResult.builder()
-                        .status(
-                                SubmissionStatus.RUNTIME_ERROR
-                        )
-                        .passed(passed)
-                        .total(testCases.size())
-                        .build();
-            }
-
-            String expected =
-                    testCase.getExpectedOutput()
-                            .trim();
-
-            String actual =
-                    result.getOutput()
-                            .trim();
-
-            if (expected.equals(actual)) {
-
-                passed++;
-
-            } else {
-
-                return JudgeResult.builder()
-                        .status(
-                                SubmissionStatus.WRONG_ANSWER
-                        )
-                        .passed(passed)
-                        .total(testCases.size())
-                        .build();
-            }
+                                .status(
+                                                SubmissionStatus.ACCEPTED)
+                                .passed(passed)
+                                .total(testCases.size())
+                                .build();
         }
-
-        return JudgeResult.builder()
-                .status(
-                        SubmissionStatus.ACCEPTED
-                )
-                .passed(passed)
-                .total(testCases.size())
-                .build();
-    }
 }
