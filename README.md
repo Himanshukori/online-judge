@@ -1,176 +1,265 @@
 # Online Judge Platform
 
-A LeetCode/HackerRank-inspired Online Judge Platform built using Spring Boot, PostgreSQL, JWT Authentication, and Java-based Code Execution Engine.
+A LeetCode/HackerRank-inspired Online Judge Platform built using Java 21, Spring Boot, PostgreSQL, JWT Authentication, and a Docker-based Code Execution Engine.
 
-The platform allows users to solve coding problems online, submit solutions, and get automatic evaluation against predefined test cases.
-
----
-
-## Features
-
-### Authentication & Authorization
-
-- User Registration
-- User Login
-- JWT Authentication
-- Protected APIs
-- Role-based architecture (User/Admin ready)
-
-### Problem Management
-
-- Create Coding Problems
-- Store Problem Statements
-- Difficulty Levels (Easy, Medium, Hard)
-- Problem Constraints
-
-### Test Case Management
-
-- Add Test Cases
-- Hidden Test Cases
-- Multiple Test Cases per Problem
-
-### Submission Management
-
-- Submit Solutions
-- View Submission History
-- View Submission Details
-
-### Online Judge
-
-- Java Code Compilation
-- Java Code Execution
-- Input Handling
-- Output Capture
-- Automatic Evaluation
-
-Supported Verdicts:
-
-- ACCEPTED
-- WRONG_ANSWER
-- COMPILATION_ERROR
-- RUNTIME_ERROR
+The platform allows users to solve coding problems online, submit solutions, and get automatic evaluation against predefined test cases inside isolated Docker containers.
 
 ---
 
-## Tech Stack
+# Features
 
-### Backend
+## Authentication & Authorization
 
-- Java 21
-- Spring Boot 3
-- Spring Security
-- Spring Data JPA
-- Hibernate
-
-### Database
-
-- PostgreSQL
-
-### Authentication
-
-- JWT (JSON Web Tokens)
-
-### Build Tool
-
-- Maven
-
-### Future Enhancements
-
-- Docker Sandbox
-- Contest Module
-- Leaderboard
-- C++ Support
-- Python Support
-- Rate Limiting
-- Admin Dashboard
+* User Registration
+* User Login
+* JWT Authentication
+* Spring Security Integration
+* Protected APIs
+* Role-based Architecture (User/Admin Ready)
 
 ---
 
-## Project Architecture
+## Problem Management
 
+* Create Coding Problems
+* Store Problem Statements
+* Difficulty Levels (Easy, Medium, Hard)
+* Constraints Support
+* Multiple Test Cases per Problem
+
+---
+
+## Test Case Management
+
+* Public Test Cases
+* Hidden Test Cases
+* Multiple Test Cases per Problem
+* Automatic Evaluation Support
+
+---
+
+## Submission Management
+
+* Submit Solutions
+* Store Submission History
+* Track Verdicts
+* Track Passed Test Cases
+* Track Total Test Cases
+
+---
+
+## Online Judge
+
+### Supported Verdicts
+
+* ACCEPTED
+* WRONG_ANSWER
+* COMPILATION_ERROR
+* RUNTIME_ERROR
+* TIME_LIMIT_EXCEEDED
+
+### Judge Workflow
+
+```text
+Submission
+     │
+     ▼
+Judge Service
+     │
+     ▼
+Executor Factory
+     │
+     ▼
+Docker Java Executor
+     │
+     ▼
+Docker Container
+     │
+ ┌───┴────┐
+ ▼        ▼
+Compile   Run
+ │         │
+ ▼         ▼
+Result Evaluation
+ │
+ ▼
+Verdict
 ```
+
+---
+
+## Docker Sandbox
+
+Implemented Features:
+
+* Docker-based Java execution
+* Workspace isolation
+* Separate compile container
+* Separate run container
+* Automatic workspace cleanup
+* Automatic container cleanup
+
+---
+
+## Resource Isolation
+
+### Compile Container
+
+* Memory Limit: 256 MB
+* CPU Limit: 1 Core
+
+### Run Container
+
+* Memory Limit: 256 MB
+* CPU Limit: 1 Core
+
+---
+
+## Security Features
+
+* Time Limit Protection
+* Infinite Loop Protection
+* Memory Isolation
+* CPU Isolation
+* Workspace Cleanup
+* Container Cleanup
+
+---
+
+# Tech Stack
+
+## Backend
+
+* Java 21
+* Spring Boot 3
+* Spring Security
+* Spring Data JPA
+* Hibernate
+* Maven
+
+## Database
+
+* PostgreSQL
+
+## Authentication
+
+* JWT (JSON Web Tokens)
+
+## Code Execution
+
+* Docker
+* Docker Java Executor
+
+## Deployment (Planned)
+
+* Docker Compose
+* Nginx
+* Oracle Cloud Free Tier
+
+## Version Control
+
+* Git
+* GitHub
+
+---
+
+# Project Architecture
+
+```text
 Client
    │
    ▼
 Spring Boot API
    │
    ├── Authentication Module
+   ├── User Module
    ├── Problem Module
    ├── Test Case Module
    ├── Submission Module
    └── Judge Module
            │
            ▼
-     Java Executor
+     Executor Factory
            │
            ▼
-      javac / java
+   Docker Java Executor
            │
            ▼
-      Judge Result
+     Docker Container
+           │
+      ┌────┴────┐
+      ▼         ▼
+   Compile      Run
+      │         │
+      ▼         ▼
+   Judge Result
 ```
 
 ---
 
-## Database Schema
+# Database Schema
 
-### Users
+## Users
 
-| Column | Type |
-|----------|----------|
-| id | BIGINT |
+| Column   | Type    |
+| -------- | ------- |
+| id       | BIGINT  |
 | username | VARCHAR |
-| email | VARCHAR |
+| email    | VARCHAR |
 | password | VARCHAR |
-| role | VARCHAR |
-
-### Problems
-
-| Column | Type |
-|----------|----------|
-| id | BIGINT |
-| title | VARCHAR |
-| description | TEXT |
-| difficulty | VARCHAR |
-| constraints_text | TEXT |
-| created_at | TIMESTAMP |
-| updated_at | TIMESTAMP |
-
-### Test Cases
-
-| Column | Type |
-|----------|----------|
-| id | BIGINT |
-| problem_id | BIGINT |
-| input_data | TEXT |
-| expected_output | TEXT |
-| hidden | BOOLEAN |
-
-### Submissions
-
-| Column | Type |
-|----------|----------|
-| id | BIGINT |
-| problem_id | BIGINT |
-| user_id | BIGINT |
-| source_code | TEXT |
-| language | VARCHAR |
-| status | VARCHAR |
-| passed_test_cases | INTEGER |
-| total_test_cases | INTEGER |
-| submitted_at | TIMESTAMP |
+| role     | VARCHAR |
 
 ---
 
-## Project Structure
+## Problems
+
+| Column           | Type      |
+| ---------------- | --------- |
+| id               | BIGINT    |
+| title            | VARCHAR   |
+| description      | TEXT      |
+| difficulty       | VARCHAR   |
+| constraints_text | TEXT      |
+| created_at       | TIMESTAMP |
+| updated_at       | TIMESTAMP |
+
+---
+
+## Test Cases
+
+| Column          | Type    |
+| --------------- | ------- |
+| id              | BIGINT  |
+| problem_id      | BIGINT  |
+| input_data      | TEXT    |
+| expected_output | TEXT    |
+| hidden          | BOOLEAN |
+
+---
+
+## Submissions
+
+| Column            | Type      |
+| ----------------- | --------- |
+| id                | BIGINT    |
+| problem_id        | BIGINT    |
+| user_id           | BIGINT    |
+| source_code       | TEXT      |
+| language          | VARCHAR   |
+| verdict           | VARCHAR   |
+| passed_test_cases | INTEGER   |
+| total_test_cases  | INTEGER   |
+| submitted_at      | TIMESTAMP |
+
+---
+
+# Project Structure
 
 ```text
 src/main/java/com/himanshukori/onlinejudge
 
 ├── auth
-│
 ├── security
-│
 ├── user
 │   ├── controller
 │   ├── service
@@ -206,17 +295,17 @@ src/main/java/com/himanshukori/onlinejudge
 
 ---
 
-## API Endpoints
+# API Endpoints
 
-### Authentication
+## Authentication
 
-#### Register
+### Register
 
 ```http
 POST /api/auth/register
 ```
 
-#### Login
+### Login
 
 ```http
 POST /api/auth/login
@@ -224,9 +313,9 @@ POST /api/auth/login
 
 ---
 
-### User
+## User
 
-#### Current User
+### Current User
 
 ```http
 GET /api/users/me
@@ -234,19 +323,31 @@ GET /api/users/me
 
 ---
 
-### Problems
+## Problems
 
-#### Create Problem
+### Create Problem
 
 ```http
 POST /api/problems
 ```
 
+### Get All Problems
+
+```http
+GET /api/problems
+```
+
+### Get Problem By ID
+
+```http
+GET /api/problems/{id}
+```
+
 ---
 
-### Test Cases
+## Test Cases
 
-#### Add Test Case
+### Add Test Case
 
 ```http
 POST /api/testcases
@@ -254,21 +355,21 @@ POST /api/testcases
 
 ---
 
-### Submissions
+## Submissions
 
-#### Submit Solution
+### Submit Solution
 
 ```http
 POST /api/submissions
 ```
 
-#### My Submissions
+### My Submissions
 
 ```http
 GET /api/submissions/my
 ```
 
-#### Submission Details
+### Submission Details
 
 ```http
 GET /api/submissions/{id}
@@ -276,23 +377,15 @@ GET /api/submissions/{id}
 
 ---
 
-## Running the Project
+# Running the Project
 
-### Clone Repository
+## Clone Repository
 
 ```bash
 git clone <repository-url>
 ```
 
-### Navigate
-
-```bash
-cd online-judge/backend
-```
-
-### Configure PostgreSQL
-
-Create database:
+## Configure PostgreSQL
 
 ```sql
 CREATE DATABASE online_judge;
@@ -301,26 +394,24 @@ CREATE DATABASE online_judge;
 Update:
 
 ```yaml
-src/main/resources/application.yml
-```
-
-```yaml
 spring:
   datasource:
     url: jdbc:postgresql://localhost:5432/online_judge
     username: postgres
-    password: root
+    password: your_password
 ```
 
 ---
 
-### Run Application
+## Build Project
 
 ```bash
-./mvnw spring-boot:run
+mvn clean install
 ```
 
-or
+---
+
+## Run Application
 
 ```bash
 mvn spring-boot:run
@@ -328,152 +419,73 @@ mvn spring-boot:run
 
 ---
 
-## Judge Workflow
+# Current Status
 
-```text
-User Submission
-        │
-        ▼
-Submission Service
-        │
-        ▼
-Judge Service
-        │
-        ▼
-Load Test Cases
-        │
-        ▼
-Execute Code
-        │
-        ▼
-Capture Output
-        │
-        ▼
-Compare Output
-        │
-        ▼
-Generate Verdict
-```
+## Completed
+
+* JWT Authentication
+* Spring Security
+* Problem Management
+* Test Case Management
+* Submission Management
+* Judge Service
+* Docker-based Java Execution
+* Resource Isolation
+* Time Limit Enforcement
+* Memory Limits
+* CPU Limits
+* Workspace Cleanup
+* Container Cleanup
 
 ---
 
-## Sample Verdict Flow
+# Planned Features
 
-### Accepted
+## Language Support
 
-Expected Output:
+* Python Execution
+* C++ Execution
 
-```text
-hello
-```
+## Contest System
 
-Actual Output:
+* Contest Creation
+* Contest Registration
+* Contest Problems
 
-```text
-hello
-```
+## Leaderboards
 
-Verdict:
+* Ranking System
+* Solved Count
+* Penalty Calculation
 
-```text
-ACCEPTED
-```
+## Deployment
 
-### Wrong Answer
-
-Expected Output:
-
-```text
-hello
-```
-
-Actual Output:
-
-```text
-world
-```
-
-Verdict:
-
-```text
-WRONG_ANSWER
-```
-
-### Compilation Error
-
-```java
-System.out.println("hello")
-```
-
-Verdict:
-
-```text
-COMPILATION_ERROR
-```
-
-### Runtime Error
-
-```java
-int x = 10 / 0;
-```
-
-Verdict:
-
-```text
-RUNTIME_ERROR
-```
+* Docker Compose
+* Nginx Reverse Proxy
+* Oracle Cloud Deployment
 
 ---
 
-## Future Roadmap
-
-### Phase 1 (Completed)
-
-- Authentication
-- Problems
-- Test Cases
-- Submissions
-- Judge Module
-
-### Phase 2
-
-- Docker Sandbox
-- Time Limits
-- Memory Limits
-- Process Isolation
-
-### Phase 3
-
-- Contest Module
-- Leaderboards
-- User Rankings
-
-### Phase 4
-
-- C++ Execution
-- Python Execution
-- Async Judging
-
----
-
-## Learning Outcomes
+# Learning Outcomes
 
 This project demonstrates:
 
-- Spring Boot Backend Development
-- REST API Design
-- JWT Authentication
-- Database Design
-- JPA Relationships
-- Code Execution Engines
-- Judge System Design
-- Software Architecture
-- Secure Execution Concepts
+* Spring Boot Backend Development
+* JWT Authentication
+* REST API Design
+* Database Design
+* JPA Relationships
+* Docker Sandboxing
+* Secure Code Execution
+* Resource Isolation
+* Judge System Design
+* Software Architecture
+* Backend System Design
 
 ---
 
-## Author
+# Author
 
 **Himanshu Kori**
 
-M.Tech Student | Backend Development | Java & Spring Boot
+M.Tech Student | Java Backend Developer | Spring Boot Enthusiast
